@@ -21,11 +21,11 @@ app.post('/criar', (requisicao, resposta) => {
 
   const sql = `
     INSERT INTO tarefas(descricao, completa)
-    VALUES ('${descricao }','${completa}')
+    VALUES ('${descricao}','${completa}')
   `
 
-  conexao.query(sql, (erro) =>{
-    if (erro){
+  conexao.query(sql, (erro) => {
+    if (erro) {
       return console.log(erro)
     }
 
@@ -33,24 +33,23 @@ app.post('/criar', (requisicao, resposta) => {
   })
 })
 
-app.get('/', (requisicao, resposta) =>{
+app.get('/', (requisicao, resposta) => {
   const sql = 'SELECT * FROM tarefas'
 
-  conexao.query(sql, (erro, dados) =>{
-    if (erro){
+  conexao.query(sql, (erro, dado) => {
+    if (erro) {
       return console.log(erro)
     }
-    const tarefas = dados.map((dados) => {
-      return{
+    const tarefas = dado.map((dado) => {
+      return {
         id: dado.id,
         descricao: dado.descricao,
-        completa: dado.completa  === 0 ? false: true
+        completa: dado.completa === 0 ? false : true
       }
 
     })
+    resposta.render('home', {tarefas})
   })
-
-    resposta.render('home')
 })
 
 const conexao = mysql.createConnection({
@@ -60,15 +59,15 @@ const conexao = mysql.createConnection({
   database: "todoapp"
 })
 
-conexao.connect((erro) =>{
-  if (erro){
+conexao.connect((erro) => {
+  if (erro) {
     return console.log(erro)
   }
 
 
   console.log("Estou conectando ao mysql")
 
-  app.listen(3000, ()=>{
+  app.listen(3000, () => {
     console.log("Servidor rodando na porta 3000!")
   })
 })
