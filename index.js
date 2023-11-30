@@ -15,26 +15,41 @@ app.use(express.urlencoded({
 
 app.use(express.json())
 
-app.post('/criar', (requisicao, resposta)=>{
+app.post('/criar', (requisicao, resposta) => {
   const descricao = requisicao.body.descricao
   const completa = 0
 
   const sql = `
-  INSERT INFO tarefas(descricao, completa)
-  VALUES ('${descricao}')','${completa}')
+    INSERT INTO tarefas(descricao, completa)
+    VALUES ('${descricao }','${completa}')
   `
-  conexao.query(sql, erro => {
-    if (erro) { 
-    return console.log(erro)
+
+  conexao.query(sql, (erro) =>{
+    if (erro){
+      return console.log(erro)
     }
 
     resposta.redirect('/')
   })
 })
 
-
-
 app.get('/', (requisicao, resposta) =>{
+  const sql = 'SELECT * FROM tarefas'
+
+  conexao.query(sql, (erro, dados) =>{
+    if (erro){
+      return console.log(erro)
+    }
+    const tarefas = dados.map((dados) => {
+      return{
+        id: dado.id,
+        descricao: dado.descricao,
+        completa: dado.completa  === 0 ? false: true
+      }
+
+    })
+  })
+
     resposta.render('home')
 })
 
@@ -42,12 +57,18 @@ const conexao = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "root",
-  database: "todoapp",
-  port: 3306
+  database: "todoapp"
 })
 
-conexao.connect((erro) => {
+conexao.connect((erro) =>{
   if (erro){
     return console.log(erro)
   }
+
+
+  console.log("Estou conectando ao mysql")
+
+  app.listen(3000, ()=>{
+    console.log("Servidor rodando na porta 3000!")
+  })
 })
